@@ -60,9 +60,11 @@ export default function Locks({
         ref={ref}
         onChange={(e) => {
           const value = e.currentTarget.value.toUpperCase();
+          setCurrentTumbler(currentTumbler + 1 === 4 ? 0 : currentTumbler + 1);
           setCurrentComboIndex(
             currentComboIndex.map((v, i) => {
               const index = characters.findIndex((v) => v === value);
+
               if (i === currentTumbler) return index === -1 ? v : index;
               else return v;
             }),
@@ -84,7 +86,7 @@ export default function Locks({
           style={{
             filter: lock.victoryLock
               ? "invert(85%) sepia(25%) saturate(3783%) hue-rotate(347deg) brightness(92%) contrast(85%)"
-              : "invert(6%) sepia(6%) saturate(1849%) hue-rotate(191deg) brightness(90%) contrast(86%)",
+              : "invert(6%) sepia(6%) saturate(1849%) hue-rotate(191deg) brightness(90%) contrast(50%)",
           }}
           src="/images/lock-fill.svg"
         />
@@ -94,7 +96,7 @@ export default function Locks({
             position: "absolute",
             filter: lock.victoryLock
               ? "invert(85%) sepia(25%) saturate(3783%) hue-rotate(347deg) brightness(92%) contrast(85%)"
-              : "invert(6%) sepia(6%) saturate(1849%) hue-rotate(191deg) brightness(90%) contrast(86%)",
+              : "invert(6%) sepia(6%) saturate(1849%) hue-rotate(191deg) brightness(90%) contrast(50%)",
           }}
           alt="test"
           src="/images/lock-fill2.svg"

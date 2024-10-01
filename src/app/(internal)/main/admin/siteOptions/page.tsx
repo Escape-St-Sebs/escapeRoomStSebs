@@ -9,6 +9,8 @@ import {
 } from "react-bootstrap";
 import { siteOptionsContext, swalContext } from "~/app/(internal)/layoutStuff";
 import { api } from "~/trpc/react";
+import Datetime from "react-datetime";
+
 type FormControlElement = HTMLInputElement | HTMLTextAreaElement;
 
 export default function Admin() {
@@ -58,11 +60,15 @@ export default function Admin() {
   const [info, setInfo] = useState({
     title: "",
     homeText: "",
+    info: "",
+    openTime: new Date(),
   });
   useEffect(() => {
     setInfo({
       title: siteOptions.title,
       homeText: siteOptions.homeText,
+      info: siteOptions.info,
+      openTime: siteOptions.openTime,
     });
   }, [siteOptions]);
   async function handleImageIcon(e: React.ChangeEvent<FormControlElement>) {
@@ -208,6 +214,44 @@ export default function Admin() {
           }
         />
       </FormGroup>
+      <FormGroup
+        style={{
+          width: "98%",
+        }}
+        className="mb-3"
+        controlId="formBasicEmail"
+      >
+        <FormLabel className="text-center">
+          Info Page Text{" "}
+          <a href="https://www.markdownguide.org/cheat-sheet/">
+            Works with markdown
+          </a>
+        </FormLabel>
+        <FormControl
+          type="text"
+          placeholder="Enter a description"
+          as="textarea"
+          value={info.info}
+          rows={10}
+          onChange={(v) => setInfo({ ...info, info: v.currentTarget.value })}
+        />
+      </FormGroup>
+      <FormGroup
+        style={{
+          width: "98%",
+        }}
+        className="mb-3"
+        controlId="formBasicEmail"
+      >
+        <FormLabel className="text-center">Open Time</FormLabel>
+        <Datetime
+          value={info.openTime}
+          onChange={(v) => {
+            if (typeof v === "string") return;
+            setInfo({ ...info, openTime: v.toDate() });
+          }}
+        />
+      </FormGroup>
       <Button
         onClick={() => {
           siteOptionsModify.mutate({
@@ -216,6 +260,7 @@ export default function Admin() {
                 ? info.homeText
                 : undefined,
             title: info.title !== siteOptions.title ? info.title : undefined,
+            info: info.info !== siteOptions.info ? info.info : undefined,
             card: imageBufferCard
               ? imageBufferCard?.buffer.toString("base64")
               : undefined,
@@ -225,6 +270,7 @@ export default function Admin() {
             icon: imageBufferIcon
               ? imageBufferIcon?.buffer.toString("base64")
               : undefined,
+            openTime: info.openTime,
           });
         }}
       >

@@ -13,8 +13,10 @@ export const siteOptionsRouter = createTRPCRouter({
             card: string;
             card2: string;
             homeText: string;
+            info: string;
             icon: string;
             title: string;
+            openTime: Date;
           };
         }
     > => {
@@ -25,6 +27,8 @@ export const siteOptionsRouter = createTRPCRouter({
           homeText: true,
           icon: true,
           title: true,
+          info: true,
+          openTime: true,
         },
       });
       if (siteOptions) {
@@ -32,10 +36,13 @@ export const siteOptionsRouter = createTRPCRouter({
           wasError: false,
           data: {
             homeText: siteOptions.homeText ?? "askj;dgfknjasdgklnasdglkn",
+            info: siteOptions.info ?? "askj;dgfknjasdgklnasdglkn",
             title: siteOptions.title ?? "Cipher Society",
             card: siteOptions.card?.toString("base64") ?? "",
             card2: siteOptions.card2?.toString("base64") ?? "",
             icon: siteOptions.icon?.toString("base64") ?? "",
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+            openTime: siteOptions.openTime ?? new Date(),
           },
         };
       }
@@ -52,7 +59,9 @@ export const siteOptionsRouter = createTRPCRouter({
         card2: z.union([z.string(), z.undefined()]),
         homeText: z.union([z.string(), z.undefined()]),
         icon: z.union([z.string(), z.undefined()]),
+        info: z.union([z.string(), z.undefined()]),
         title: z.union([z.string(), z.undefined()]),
+        openTime: z.union([z.date(), z.undefined()]),
       }),
     )
     .mutation(async ({ input, ctx }) => {
@@ -72,9 +81,11 @@ export const siteOptionsRouter = createTRPCRouter({
               card2: input.card2
                 ? Buffer.from(input.card2, "base64")
                 : undefined,
+              info: input.info,
               homeText: input.homeText,
               icon: input.icon ? Buffer.from(input.icon, "base64") : undefined,
               title: input.title,
+              openTime: input.openTime,
             },
           });
           return { wasError: false, data: "Modified site options" };
